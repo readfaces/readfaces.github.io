@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+  <title>瑞盈数字人脸识别注册系统（演示版）</title>
+  <!-- 引入 WeUI CDN 链接 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weui/2.3.0/style/weui.min.css"
+    integrity="sha512-27OaZ2fLPyTv9CVfvWIZ3ilqi/iZM/orDRgTdG1IjnGb6L+5qWgrvjQb+yhiBl7yG05BDkB4E0X6WqpCbmIwbw=="
+    crossorigin="anonymous" />
+  <style type="text/css">
+    html {
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      height: 100%;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .face_window {
+      width: 300px;
+      height: 300px;
+      margin: 0 auto;
+      overflow: hidden;
+      background: #16a085;
+      border-radius: 50%;
+    }
+
+    #video {
+      width: 300px;
+    }
+  </style>
+</head>
+
+<body ontouchstart>
+  <div class="weui-form">
+    <div class="weui-form__text-area">
+      <h2 class="weui-form__title">请将人脸置于框内</h2>
+      <div class="weui-form__desc"></div>
+    </div>
+    <div class="weui-form__control-area">
+      <div class="weui-cells__group weui-cells__group_form">
+        <div class="face_window">
+          <video id="video"></video>
+        </div>
+      </div>
+      <span id="log" style="text-align: center;color: red;"></span>
+    </div>
+  </div>
+
+  <div id="js_toast" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+      <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+      <p class="weui-toast__content">已完成</p>
+    </div>
+  </div>
+
+  <div class="page__bd page__bd_spacing">
+    <div class="weui-footer weui-footer_fixed-bottom">
+      <p class="weui-footer__text">Copyright &copy; 2019-2021 深圳瑞盈数字科技有限公司</p>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"
+    integrity="sha512-BrvVYNhKh6yST24E5DY/LopLO5d+8KYmIXyrpBIJ2PK+CyyJw/cLSG/BfJomWLC1IblNrmiJWGlrGueKLd/Ekw=="
+    crossorigin="anonymous"></script>
+  <script type="text/javascript">
+    $(function () {
+      var $toast = $('#js_toast');
+
+      $toast.fadeIn(100);
+      setTimeout(function () {
+        $toast.fadeOut(100);
+      }, 2000);
+
+    });
+
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+    window.URL = window.URL || window.webkitURL || window.mozURL || window.msURL;
+
+    video = document.getElementById("video");
+    // Call the getUserMedia method with our callback functions
+    if (navigator.getUserMedia) {
+      navigator.getUserMedia({ video: true }, successCallback, errorCallback);
+    } else {
+      alert('浏览器不支持getUserMedia.');
+      // Display a friendly "sorry" message to the user
+    }
+
+    function successCallback(stream) {
+      // Set the source of the video element with the stream from the camera
+      if (video.mozSrcObject !== undefined) {
+        video.mozSrcObject = stream;
+      } else {
+        video.srcObject = stream;
+      }
+      video.play();
+      //show_log($('#video').width());
+    }
+
+    function errorCallback(error) {
+      alert('错误代码: [CODE ' + error.code + ']');
+      // Display a friendly "sorry" message to the user
+    }
+
+    function show_log(msg) {
+      $("#log").html(msg);
+    }
+  </script>
+
+</body>
+
+</html>
