@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+  <title>瑞盈数字人脸识别注册系统（演示版）</title>
+  <!-- 引入 WeUI CDN 链接 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weui/2.3.0/style/weui.min.css"
+    integrity="sha512-27OaZ2fLPyTv9CVfvWIZ3ilqi/iZM/orDRgTdG1IjnGb6L+5qWgrvjQb+yhiBl7yG05BDkB4E0X6WqpCbmIwbw=="
+    crossorigin="anonymous" />
+</head>
+
+<body ontouchstart>
+  <div class="weui-toptips weui-toptips_warn js_tooltips">错误提示</div>
+  <div class="weui-form">
+    <div class="weui-form__text-area">
+      <h2 class="weui-form__title">人脸采集</h2>
+      <div class="weui-form__desc"></div>
+    </div>
+
+    <div class="weui-gallery" id="gallery">
+      <span class="weui-gallery__img" id="galleryImg"></span>
+      <div class="weui-gallery__opr">
+        <a href="javascript:" class="weui-gallery__del" id="galleryDel">
+          <i class="weui-icon-delete weui-icon_gallery-delete"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="weui-cell__bd">
+      <div class="weui-uploader">
+        <div class="weui-uploader__bd">
+          <ul class="weui-uploader__files" id="uploaderFiles">
+          </ul>
+          <div class="weui-uploader__input-box">
+            <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple />
+          </div>
+        </div>
+      </div>
+      <span id="log" style="text-align: center;color: red;"></span>
+    </div>
+
+  </div>
+  <div id="js_toast" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+      <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+      <p class="weui-toast__content">已完成</p>
+    </div>
+  </div>
+
+  <div class="page__bd page__bd_spacing">
+    <div class="weui-footer weui-footer_fixed-bottom">
+      <p class="weui-footer__text">Copyright &copy; 2019-2021 深圳瑞盈数字科技有限公司</p>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+    integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+    crossorigin="anonymous"></script>
+  <script type="text/javascript">
+    $(function () {
+      var tmpl = '<li class="weui-uploader__file" style="background-image:url(#url#)"></li>',
+        $gallery = $("#gallery"),
+        $galleryImg = $("#galleryImg"),
+        $uploaderInput = $("#uploaderInput"),
+        $uploaderFiles = $("#uploaderFiles"),
+        $galleryDel = $("#galleryDel");
+
+      $uploaderInput.on("change", function (e) {
+        var src, url = window.URL || window.webkitURL || window.mozURL, files = e.target.files;
+        for (var i = 0, len = files.length; i < len; ++i) {
+          var file = files[i];
+
+          if (url) {
+            src = url.createObjectURL(file);
+          } else {
+            src = e.target.result;
+          }
+
+          $uploaderFiles.append($(tmpl.replace('#url#', src)));
+        }
+      });
+      $uploaderFiles.on("click", "li", function () {
+        $galleryImg.attr("style", this.getAttribute("style"));
+        $gallery.fadeIn(100);
+      });
+      $gallery.on("click", function () {
+        $gallery.fadeOut(100);
+      });
+      $galleryDel.on("click", function () {
+        $uploaderFiles.find("li").each(function (index, value) {
+          if (value.getAttribute("style") == $galleryImg.get(0).getAttribute("style")) {
+            value.remove();
+          }
+        });
+      });
+    });
+    function show_log(msg) {
+      $("#log").html(msg);
+    }
+  </script>
+</body>
+
+</html>
