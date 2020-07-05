@@ -42,7 +42,7 @@
 <body ontouchstart>
   <div class="weui-form">
     <div class="weui-form__text-area">
-      <h2 class="weui-form__title">请将人脸置于框内</h2>
+      <h2 class="weui-form__title" id="guide_msg"></h2>
       <div class="weui-form__desc"></div>
     </div>
     <div class="weui-form__control-area">
@@ -50,6 +50,7 @@
         <div class="face_window">
           <video id="video"></video>
         </div>
+        <canvas id="canvas" style="display:none"></canvas>
       </div>
       <span id="log" style="text-align: center;color: red;"></span>
     </div>
@@ -90,9 +91,12 @@
     // Call the getUserMedia method with our callback functions
     if (navigator.getUserMedia) {
       navigator.getUserMedia({ video: true }, successCallback, errorCallback);
+      show_msg("请将人脸置于框内")
     } else {
-      alert('浏览器不支持getUserMedia.');
-      // Display a friendly "sorry" message to the user
+      // alert('浏览器不支持getUserMedia.');
+      var full_name = get_query_string("full_name");
+      var mobile_number = get_query_string("mobile_number");
+      $(location).attr("href", "uploader.html?type=register&full_name=" + full_name + "&mobile_number=" + mobile_number);
     }
 
     function successCallback(stream) {
@@ -111,8 +115,33 @@
       // Display a friendly "sorry" message to the user
     }
 
+    function show_msg(msg) {
+      $("#guide_msg").html(msg);
+      setTimeout(function () {
+        post_image();
+      }, 1000);
+    }
+
+    function post_image() {
+      var canvas = document.getElementById("canvas"),
+        context = canvas.getContext("2d"),
+        video = document.getElementById("video");
+      context.drawImage(video, 0, 0);
+      var image_uri = canvas.toDataURL();
+      var image_base64 = image_uri.substr(22);
+      // show_log(image_base64.length);
+      show_log(image_base64);
+    }
+
     function show_log(msg) {
       $("#log").html(msg);
+    }
+
+    function get_query_string(name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+      var r = decodeURI(window.location.search.substr(1)).match(reg);
+      if (r != null) return unescape(r[2]);
+      return null;
     }
   </script>
 

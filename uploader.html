@@ -15,7 +15,7 @@
   <div class="weui-toptips weui-toptips_warn js_tooltips">错误提示</div>
   <div class="weui-form">
     <div class="weui-form__text-area">
-      <h2 class="weui-form__title">人脸采集</h2>
+      <h2 class="weui-form__title">人脸绑定</h2>
       <div class="weui-form__desc"></div>
     </div>
 
@@ -38,6 +38,8 @@
           </div>
         </div>
       </div>
+      <canvas id="canvas" style="display:none"></canvas>
+      <img id="image" style="display:none" />
       <span id="log" style="text-align: center;color: red;"></span>
     </div>
 
@@ -77,7 +79,8 @@
           } else {
             src = e.target.result;
           }
-
+          $("#image").attr('src', src);
+          post_image();
           $uploaderFiles.append($(tmpl.replace('#url#', src)));
         }
       });
@@ -96,8 +99,30 @@
         });
       });
     });
+
+    function post_image() {
+      var canvas = document.getElementById("canvas"),
+        context = canvas.getContext("2d"),
+        image = document.getElementById("image");
+      context.drawImage(image, 0, 0);
+      var image_uri = canvas.toDataURL();
+      var image_base64 = image_uri.substr(22);
+      // show_log(image_base64.length);
+      show_log(image_base64);
+    }
+
+    // show_log(get_query_string("full_name"));
+    // show_log(get_query_string("mobile_number"));
+
     function show_log(msg) {
       $("#log").html(msg);
+    }
+
+    function get_query_string(name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+      var r = decodeURI(window.location.search.substr(1)).match(reg);
+      if (r != null) return unescape(r[2]);
+      return null;
     }
   </script>
 </body>
